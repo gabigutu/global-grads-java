@@ -1,5 +1,9 @@
 package com.db.except;
 
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -7,6 +11,17 @@ public class Main {
 //        Main.divideWithoutTry();
         Main.divideWithTry();
         System.out.println("Another message");
+
+        Set<Integer> integerSet = new TreeSet<>();
+        integerSet.add(4);
+        integerSet.add(4);
+        integerSet.add(5);
+        integerSet.add(6);
+
+        Iterator<Integer> integerIterator = integerSet.iterator();
+        while(integerIterator.hasNext()) {
+            System.out.print(integerIterator.next() + ", ");
+        }
     }
 
     private static void divideWithoutTry() {
