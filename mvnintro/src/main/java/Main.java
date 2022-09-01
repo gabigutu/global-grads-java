@@ -48,21 +48,3 @@ class Student {
     }
 }
 
-class Teacher {
-    private String nume;
-
-    public Teacher(String nume) {
-        this.nume = nume;
-    }
-
-    public String getNume() {
-        return nume;
-    }
-
-    @Override
-    public String toString() {
-        return "Teacher{" +
-                "nume='" + nume + '\'' +
-                '}';
-    }
-}
