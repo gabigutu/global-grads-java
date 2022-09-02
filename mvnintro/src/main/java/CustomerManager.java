@@ -1,10 +1,30 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
-@PrimaryKeyColumn(columnName = "customers")
-public class CustomerManager {
+@PrimaryKeyColumn(columnName = "customer_id")
+@DatabaseTable(tableName = "customers")
+public class CustomerManager extends TableManager {
+
+    private String tableName;
+    private String primaryKeyColumnName;
+
+    public CustomerManager() {
+        try {
+            readAnnotations();
+        } catch (TableNameNotSpecifiedException e) {
+            System.err.println("Table not specified: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    protected void readAnnotations() throws TableNameNotSpecifiedException {
+        Class thisClass = this.getClass();
+        PrimaryKeyColumn primaryKeyAnnotation = (PrimaryKeyColumn) thisClass.getAnnotation(PrimaryKeyColumn.class);
+        if (primaryKeyAnnotation != null) {
+            primaryKeyColumnName = primaryKeyAnnotation.columnName();
+        }
+    }
 
     public Customer queryCustomer(ResultSet rs) throws SQLException {
         while(rs.next()) {
@@ -24,7 +44,7 @@ public class CustomerManager {
     }
 
     public Customer select(DBConnect dbConnnect, Map<String, String> whereClauses) throws SQLException {
-        ResultSet rs = dbConnnect.selectRow("customers", whereClauses);
+        ResultSet rs = dbConnnect.selectRow(tableName, whereClauses);
         Customer customer = queryCustomer(rs);
         return customer;
     }

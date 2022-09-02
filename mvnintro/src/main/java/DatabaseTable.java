@@ -2,6 +2,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PrimaryKeyColumn {
-    String columnName();
+public @interface DatabaseTable {
+    String tableName();
 }

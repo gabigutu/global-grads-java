@@ -10,6 +10,7 @@ public class DBMain {
         List<Customer> customers = new ArrayList<>();
         DBConnect dbConnnect = DBConnect.getInstance();
         CustomerManager customerManager = new CustomerManager();
+        TeacherManager teacherManager = new TeacherManager();
         try {
             HashMap<String, String> whereClauses = new HashMap<>();
  //           whereClauses.put(" ", " ");

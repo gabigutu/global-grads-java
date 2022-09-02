@@ -1,8 +1,9 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@PrimaryKeyColumn(columnName = "customers")
-public class TeacherManager {
+@PrimaryKeyColumn(columnName = "customer_id")
+@DatabaseTable(tableName = "customers")
+public class TeacherManager extends TableManager {
 
     public Teacher queryTeacher(ResultSet rs) throws SQLException {
         while(rs.next()) {
