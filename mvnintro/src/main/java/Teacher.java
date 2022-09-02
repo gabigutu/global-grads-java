@@ -1,7 +1,10 @@
 import java.util.Date;
 
+@DTO
 public class Teacher {
     private String nume;
+
+    @RealDate
     private Date paymentDate;
     private float amount;
 
@@ -9,6 +12,7 @@ public class Teacher {
         this(nume, null, -1);
     }
 
+    @RealDate
     public Teacher(String nume, Date paymentDate, float amount) {
         this.nume = nume;
         this.paymentDate = paymentDate;

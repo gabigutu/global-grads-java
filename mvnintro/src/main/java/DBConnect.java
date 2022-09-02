@@ -1,6 +1,10 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class DBConnect {
 
@@ -18,20 +22,36 @@ public class DBConnect {
         this.connect();
     }
 
-    private void connect() {
-        String connectionString = "jdbc:mysql://localhost:3306/amazon";
-        String username = "root";
-        String password = "root";
+    private Properties readProperties() throws IOException {
+        FileInputStream fileInputStream = new FileInputStream("src/main/resources/database.properties");
+        Properties properties = new Properties();
+        properties.load(fileInputStream);
+        System.out.println(properties.propertyNames());
+        return properties;
+    }
 
+
+    private void connect() {
         try {
+            Properties properties = readProperties();
+            String connectionString = "jdbc:" +
+                    properties.getProperty("dbtype") + "://" +
+                    properties.getProperty("server") + ":" +
+                    properties.getProperty("port") + "/" +
+                    properties.get("database");
+            String username = properties.getProperty("username");
+            String password = properties.getProperty("password");
             connection = DriverManager.getConnection(connectionString, username, password);
             System.out.println("Successfully connected");
         } catch (SQLException exception) {
-            System.err.println("Cannot connect to MySQL");
+            System.err.println("Cannot connect to MySQL: " + exception.getMessage());
+        } catch (IOException exception) {
+            System.err.println("Exception reading properties: " + exception.getMessage());
+            exception.printStackTrace();
         }
     }
 
-    public ResultSet selectRow(String tableName, HashMap<String, String> whereClauses) throws SQLException {
+    public ResultSet selectRow(String tableName, Map<String, String> whereClauses) throws SQLException {
         Statement ps = connection.createStatement();
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("SELECT * FROM ").append(tableName).append(" WHERE 1");

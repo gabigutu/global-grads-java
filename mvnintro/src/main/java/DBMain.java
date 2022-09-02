@@ -14,14 +14,15 @@ public class DBMain {
             HashMap<String, String> whereClauses = new HashMap<>();
  //           whereClauses.put(" ", " ");
  //           whereClauses.put("amount", "77.0");
-            ResultSet rs = dbConnnect.selectRow("customers", whereClauses);
-            Customer customer = customerManager.queryCustomer(rs);
+//            ResultSet rs = dbConnnect.selectRow("customers", whereClauses);
+//            Customer customer = customerManager.queryCustomer(rs);
+            Customer customer = customerManager.select(dbConnnect, whereClauses);
             customers.add(customer);
-            while(customer != null){
-                customer = customerManager.queryCustomer(rs);
-                customers.add(customer);
-                System.out.println(customer);
-            }
+//            while(customer != null){
+//                customer = customerManager.queryCustomer(rs);
+//                customers.add(customer);
+//                System.out.println(customer);
+//            }
             System.out.println(customer);
         } catch (SQLException exception) {
             System.err.println("Select exception: " + exception.getMessage());

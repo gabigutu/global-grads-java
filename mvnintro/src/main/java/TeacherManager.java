@@ -1,6 +1,7 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@PrimaryKeyColumn(columnName = "customers")
 public class TeacherManager {
 
     public Teacher queryTeacher(ResultSet rs) throws SQLException {
