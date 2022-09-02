@@ -13,7 +13,7 @@ public class Main {
         lista.addAtPosition(121,3);
         lista.addAtPosition(126,7);
 
-        lista.removePosition(3);
+        lista.removePosition(5);
      //   lista.setAtPosition(45, 3);
       //  lista.setAtPosition(76, 3);
 
