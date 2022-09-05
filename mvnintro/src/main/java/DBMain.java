@@ -3,18 +3,49 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.log4j.PropertyConfigurator;
+import spark.Spark;
 
 public class DBMain {
 
     public static void main(String args[]) {
+
+//        Logger logger = Logger.getLogger("CustomerLogger");
+//        logger.log(Level.WARNING, "Application started");
+        String log4jConfPath = "src/main/resources/log4j.properties";
+        PropertyConfigurator.configure(log4jConfPath);
+        DBConnect dbConnnect = DBConnect.getInstance();
+        CustomerManager customerManager = new CustomerManager();
+
+        Spark.get("/api/customer/:id", (request, response) -> {
+            int customerId = 0;
+            try {
+                customerId = Integer.parseInt(request.params(":id"));
+            } catch(NumberFormatException exception) {
+                System.err.println("Customer ID error: " + exception.getClass().getName() + " " + exception.getMessage());
+                return null;
+            }
+//            System.out.println("No of params: " + request.params().size());
+            System.out.println("Customer id = " + customerId);
+//            System.out.println(request);
+//            System.out.println(response);
+            Customer customer = customerManager.selectById(dbConnnect, customerId);
+            return customer;
+        });
+    }
+
+    public static void exampleQuries() {
         List<Customer> customers = new ArrayList<>();
         DBConnect dbConnnect = DBConnect.getInstance();
         CustomerManager customerManager = new CustomerManager();
         TeacherManager teacherManager = new TeacherManager();
         try {
             HashMap<String, String> whereClauses = new HashMap<>();
- //           whereClauses.put(" ", " ");
- //           whereClauses.put("amount", "77.0");
+            //           whereClauses.put(" ", " ");
+            //           whereClauses.put("amount", "77.0");
 //            ResultSet rs = dbConnnect.selectRow("customers", whereClauses);
 //            Customer customer = customerManager.queryCustomer(rs);
             Customer customer = customerManager.select(dbConnnect, whereClauses);
@@ -30,36 +61,35 @@ public class DBMain {
         }
         try {
             HashMap<String, String> whereClauses = new HashMap<>();
-                       whereClauses.put("id", "2");
+            whereClauses.put("id", "2");
             //           whereClauses.put("amount", "77.0");
-            dbConnnect.updateRow("customers", whereClauses,"phone", "0732222222");
+            dbConnnect.updateRow("customers", whereClauses, "phone", "0732222222");
         } catch (SQLException exception) {
             System.err.println("Select exception: " + exception.getMessage());
         }
         try {
-        HashMap<String, String> whereClauses = new HashMap<>();
-       // whereClauses.put("id", "2");
-        //           whereClauses.put("amount", "77.0");
-        dbConnnect.insertRowCustomer("customers", whereClauses,
-                "Andrei97",
-                "Popescu",
-                "Andrei",
-                "0755323123",
-                "Str.Libertatii",
-                "Bucuresti",
-                "342000",
-                "Romania");
-    } catch (SQLException exception) {
-        System.err.println("Select exception: " + exception.getMessage());
-    }
+            HashMap<String, String> whereClauses = new HashMap<>();
+            // whereClauses.put("id", "2");
+            //           whereClauses.put("amount", "77.0");
+            dbConnnect.insertRowCustomer("customers", whereClauses,
+                    "Andrei97",
+                    "Popescu",
+                    "Andrei",
+                    "0755323123",
+                    "Str.Libertatii",
+                    "Bucuresti",
+                    "342000",
+                    "Romania");
+        } catch (SQLException exception) {
+            System.err.println("Select exception: " + exception.getMessage());
+        }
         try {
             HashMap<String, String> whereClauses = new HashMap<>();
-             whereClauses.put("id", "10");
+            whereClauses.put("id", "10");
             //           whereClauses.put("amount", "77.0");
             dbConnnect.deleteRow("customers", whereClauses);
         } catch (SQLException exception) {
             System.err.println("Select exception: " + exception.getMessage());
         }
-
     }
 }

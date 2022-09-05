@@ -1,5 +1,6 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 @PrimaryKeyColumn(columnName = "customer_id")
@@ -41,6 +42,14 @@ public class CustomerManager extends TableManager {
             );
         }
         return null;
+    }
+
+    public Customer selectById(DBConnect dbConnect, int id) throws SQLException {
+        Map<String, String> whereClauses = new HashMap<>();
+        whereClauses.put("id", String.valueOf(id));
+//        whereClauses.put("id", (new Integer(id)).toString());
+//        whereClauses.put("id", Integer.valueOf(id).toString());
+        return this.select(dbConnect, whereClauses);
     }
 
     public Customer select(DBConnect dbConnnect, Map<String, String> whereClauses) throws SQLException {
