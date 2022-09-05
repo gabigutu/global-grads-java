@@ -7,10 +7,10 @@ import java.util.Map;
 @DatabaseTable(tableName = "customers")
 public class CustomerManager extends TableManager {
 
-    private String tableName;
     private String primaryKeyColumnName;
 
     public CustomerManager() {
+        super();
         try {
             readAnnotations();
         } catch (TableNameNotSpecifiedException e) {
@@ -20,6 +20,7 @@ public class CustomerManager extends TableManager {
     }
 
     protected void readAnnotations() throws TableNameNotSpecifiedException {
+        super.readAnnotations();
         Class thisClass = this.getClass();
         PrimaryKeyColumn primaryKeyAnnotation = (PrimaryKeyColumn) thisClass.getAnnotation(PrimaryKeyColumn.class);
         if (primaryKeyAnnotation != null) {
@@ -33,11 +34,11 @@ public class CustomerManager extends TableManager {
                     rs.getInt("id"),
                     rs.getString("username"),
                     rs.getString("last_name"),
-                    rs.getString("fist_name"),
+                    rs.getString("first_name"),
                     rs.getString("phone"),
                     rs.getString("address"),
                     rs.getString("city"),
-                    rs.getString("postalCode"),
+                    rs.getString("postal_code"),
                     rs.getString("country")
             );
         }
@@ -56,6 +57,12 @@ public class CustomerManager extends TableManager {
         ResultSet rs = dbConnnect.selectRow(tableName, whereClauses);
         Customer customer = queryCustomer(rs);
         return customer;
+    }
+
+    public boolean deleteById(DBConnect dbConnect, int id) throws SQLException {
+        Map<String, String> whereClauses = new HashMap<>();
+        whereClauses.put("id", String.valueOf(id));
+        return dbConnect.deleteRow(tableName, whereClauses);
     }
 
 }

@@ -94,7 +94,7 @@ public class DBConnect {
         boolean rs = ps.execute(sqlQuery.toString());
         return rs;
     }
-    public boolean deleteRow(String tableName, HashMap<String, String> whereClauses) throws SQLException {
+    public boolean deleteRow(String tableName, Map<String, String> whereClauses) throws SQLException {
         Statement ps = connection.createStatement();
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("DELETE FROM ").append(tableName).append(" WHERE 1");
