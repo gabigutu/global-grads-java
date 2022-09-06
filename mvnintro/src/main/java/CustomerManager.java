@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @PrimaryKeyColumn(columnName = "customer_id")
-@DatabaseTable(tableName = "customers")
+@DatabaseTable(tableName = "customers", tableColumn = "phone")
 public class CustomerManager extends TableManager {
 
     private String primaryKeyColumnName;
@@ -58,11 +58,20 @@ public class CustomerManager extends TableManager {
         Customer customer = queryCustomer(rs);
         return customer;
     }
+    public ResultSet selectAll(DBConnect dbConnnect) throws SQLException {
+        Map<String, String> whereClauses = new HashMap<>();
+        return dbConnnect.selectRow(tableName,whereClauses);
+    }
 
     public boolean deleteById(DBConnect dbConnect, int id) throws SQLException {
         Map<String, String> whereClauses = new HashMap<>();
         whereClauses.put("id", String.valueOf(id));
         return dbConnect.deleteRow(tableName, whereClauses);
+    }
+    public int updateById(DBConnect dbConnect, int id) throws SQLException {
+        Map<String, String> whereClauses = new HashMap<>();
+        whereClauses.put("id", String.valueOf(id));
+        return dbConnect.updateRow(tableName, whereClauses, tableColumn, "0751111111");
     }
 
 }

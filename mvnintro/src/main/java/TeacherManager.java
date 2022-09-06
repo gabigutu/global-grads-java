@@ -2,7 +2,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @PrimaryKeyColumn(columnName = "customer_id")
-@DatabaseTable(tableName = "customers")
+@DatabaseTable(tableName = "customers", tableColumn = "phone")
 public class TeacherManager extends TableManager {
 
     public Teacher queryTeacher(ResultSet rs) throws SQLException {

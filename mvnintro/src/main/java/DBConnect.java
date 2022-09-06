@@ -62,7 +62,8 @@ public class DBConnect {
         ResultSet rs = ps.executeQuery(sqlQuery.toString());
         return rs;
     }
-    public int updateRow(String tableName, HashMap<String, String> whereClauses, String column, String set) throws SQLException {
+
+    public int updateRow(String tableName, Map<String, String> whereClauses, String column, String set) throws SQLException {
         Statement ps = connection.createStatement();
         StringBuilder sqlQuery = new StringBuilder();
         sqlQuery.append("UPDATE ").append(tableName).append(" SET ").append(column).append(" = ").append("\"" + set + "\"").append(" WHERE 1");

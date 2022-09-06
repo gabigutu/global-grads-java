@@ -3,8 +3,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import org.apache.log4j.PropertyConfigurator;
@@ -51,13 +49,51 @@ public class DBMain {
             }
             return "{}";
         });
-        Spark.get("/api/maps/:lat-:long", (request, respones) -> {
+        Spark.get("/api/maps/:lat/:long", (request, respones) -> {
             int lat = intFromReuqestParam(request, "lat");
             int _long = intFromReuqestParam(request, "long");
+                return "{" +
+                        "lat:" + lat + ", " +
+                        "long:" + _long +
+                        "}";
+
+        });
+        Spark.get("/api/maps", (request, respones) -> {
+            request.queryMap();
             return "{" +
-                    "lat:" + lat + ", " +
-                    "long:" + _long +
+                    "lat:" + request.queryParams("lat") +  ", " +
+                    "long:" + request.queryParams("long") +
                     "}";
+
+        });
+        Spark.post("/api/customer/:id",(request, respones) -> {
+            int customerId = intFromReuqestParam(request, "id");
+            if (customerId == 0) {
+                return null;
+            }
+            int updated = customerManager.updateById(dbConnnect, customerId);
+            Customer customer = customerManager.selectById(dbConnnect, customerId);
+            String customerStr = gson.toJson(customer);
+            if(updated == 1){
+                System.out.println("updated customer: " + customerStr);
+            }
+            System.out.println("Customer as JSON = " + customerStr);
+            return customerStr;
+        });
+        Spark.get("/api/customers", (request, response) -> {
+            ResultSet customerResultSet = customerManager.selectAll(dbConnnect);
+            Customer customer = customerManager.queryCustomer(customerResultSet);
+            List customers = new ArrayList();
+            if (customer == null) {
+                return "{}";
+            }
+            while(customer!=null) {
+                customers.add(customer);
+                customer = customerManager.queryCustomer(customerResultSet);
+            }
+            String customersStr = gson.toJson(customers);
+            System.out.println("Customer as JSON = " + customersStr);
+            return customersStr;
         });
         // spark.update customerId
         // spark.get all customer
