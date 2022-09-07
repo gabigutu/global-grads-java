@@ -14,11 +14,16 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     public Customer getCustomerById(int customerId) {
-        Optional<Customer> customerOptional = this.customerRepository.findById(customerId);
-        if (customerOptional.isPresent()) {
-            return customerOptional.get();
-        }
-        return null;
+//        Customer customer = this.customerRepository.getReferenceById(customerId);
+        Customer customer = this.customerRepository.findById(customerId).get();
+        System.out.println("Customer " + customer.id);
+        return customer;
+    }
+
+    public Customer insertCustomer(Customer customer) {
+        customer = this.customerRepository.saveAndFlush(customer);
+        System.out.println("Saved new customer with id: " + customer.id);
+        return customer;
     }
 
 }
