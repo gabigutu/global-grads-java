@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customers</title>
+    <p>There are <span th:text="${customers.size()}">x</span> customers in the list.</p>
+    <table>
+        <tbody>
+            <tr th:each="customer: ${customers}">
+                <td th:text="${customer.id}"></td>
+                <td th:text="${customer.username}"></td>
+                <td th:text="${customer.address}"></td>
+                <td th:text="${customer.firstName}"></td>
+            </tr>
+        </tbody>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Address</th>
+                <th>First name</th>
+            </tr>
+        </thead>
+    </table>
+</head>
+<body>
+
+</body>
+</html>

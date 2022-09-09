@@ -5,6 +5,7 @@ import com.db.springhello.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +25,10 @@ public class CustomerService {
         customer = this.customerRepository.saveAndFlush(customer);
         System.out.println("Saved new customer with id: " + customer.id);
         return customer;
+    }
+
+    public List<Customer> getCustomers() {
+        return this.customerRepository.findAll();
     }
 
 }

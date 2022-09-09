@@ -1,5 +1,6 @@
 package com.db.springhello.services;
 
+import com.db.springhello.models.City;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
@@ -54,11 +55,40 @@ public class LatLongService {
         }
     }
 
-    private String generateRandomString() {
+    private String generateRandomStringUtf8() {
         byte[] array = new byte[7]; // length is bounded by 7
         new Random().nextBytes(array);
-        String generatedString = new String(array, Charset.forName("ASCII"));
+        String generatedString = new String(array, Charset.forName("UTF-8"));
         return generatedString;
     }
 
+    private String generateRandomString() {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder(targetStringLength);
+        for (int i = 0; i < targetStringLength; i++) {
+            int randomLimitedInt = leftLimit + (int)
+                    (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        return buffer.toString();
+    }
+
+    public Map<Pair<Float, Float>, String> getCities() {
+        return cities;
+    }
+
+    public City[] getCitiesAsArray() {
+        City cities[] = new City[this.cities.size()];
+        int k = 0;
+        for (Map.Entry<Pair<Float, Float>, String> city : this.cities.entrySet()) {
+            float lat = city.getKey().getLeft();
+            float _long = city.getKey().getRight();
+            String cityName = city.getValue();
+            cities[k++] = new City(lat, _long, cityName);
+        }
+        return cities;
+    }
 }
