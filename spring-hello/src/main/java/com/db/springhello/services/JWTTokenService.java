@@ -26,18 +26,26 @@ public class JWTTokenService {
         algorithm = Algorithm.HMAC256(password);
     }
 
-    public JWTCreator.Builder generateToken(int expireDays) { // tight coupling
+    public JWTCreator.Builder generateToken(int expireDays, int role) { // tight coupling
         JWTCreator.Builder jwtBuilder = JWT.create();
         Algorithm jwtAlgorithm = Algorithm.HMAC256(password);
         Date nowDate = new Date();
         Date expireDate = DateUtils.addDays(nowDate, expireDays);
         return jwtBuilder.withIssuedAt(new Timestamp(nowDate.getTime()))
                 .withIssuer("SpringGoodbyeApplication")
-                .withExpiresAt(expireDate);
+                .withExpiresAt(expireDate).withClaim("role", role);
+    }
+    public JWTCreator.Builder generateToken(int role) {
+        return generateToken(LOGIN_EXPIRE_DAYS, role);
     }
 
-    public JWTCreator.Builder generateToken() {
-        return generateToken(LOGIN_EXPIRE_DAYS);
+    public JWTCreator.Builder generateToken(DecodedJWT decodedJWT) { // tight coupling
+        JWTCreator.Builder jwtBuilder = JWT.create();
+        Date nowDate = decodedJWT.getIssuedAt();
+        Date expireDate = decodedJWT.getExpiresAt();
+        return jwtBuilder.withIssuedAt(new Timestamp(nowDate.getTime()))
+                .withIssuer(jwtIssuer)
+                .withExpiresAt(expireDate).withClaim("role", decodedJWT.getClaim("role").toString());
     }
 
     public String signToken(JWTCreator.Builder builder) {
@@ -69,6 +77,17 @@ public class JWTTokenService {
         return true;
     }
 
+    private boolean sameSignature(DecodedJWT decodedJWT) {
+        JWTCreator.Builder jwtBuilder = this.generateToken(decodedJWT);
+        String newToken = this.signToken(jwtBuilder.withSubject(decodedJWT.getSubject()));
+        DecodedJWT newTokenDecoded = this.decodeToken(newToken);
+        String newTokenSignature = newTokenDecoded.getSignature();
+        String oldTokenSignature = decodedJWT.getSignature(); // ?
+        System.out.println("Old token signature: " + oldTokenSignature);
+        System.out.println("New token signature: " + newTokenSignature);
+        return oldTokenSignature.compareTo(newTokenSignature) == 0;
+    }
+
     private boolean checkNotExpired(DecodedJWT decodedJWT) {
         Date expiresAt = decodedJWT.getExpiresAt();
         Date nowDate = new Date();
@@ -79,7 +98,7 @@ public class JWTTokenService {
     }
 
     public boolean verifyToken(DecodedJWT decodedJWT) {
-        return verifyIssuer(decodedJWT) && checkNotExpired(decodedJWT);
+        return sameSignature(decodedJWT) && verifyIssuer(decodedJWT) && checkNotExpired(decodedJWT);
     }
 
     public DecodedJWT decodeToken(String token) {

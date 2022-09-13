@@ -3,8 +3,12 @@ package com.db.springhello.services;
 import com.db.springhello.models.City;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -13,12 +17,24 @@ public class LatLongService {
 
     private int noCities;
     private Map<Pair<Float, Float>, String> cities;
+    private City defaultCity;
 
     public LatLongService() {
+        System.out.println("LatLongService instantiated");
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("LatLongService init");
         cities = new HashMap<>();
         this.noCities = 100;
         this.setCities();
         this.printCities();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("LatLongService destroyed");
     }
 
     public String getCityName(float lat, float _long) {
@@ -87,8 +103,26 @@ public class LatLongService {
             float lat = city.getKey().getLeft();
             float _long = city.getKey().getRight();
             String cityName = city.getValue();
-            cities[k++] = new City(lat, _long, cityName);
+//            cities[k++] = new City(lat, _long, cityName);
+//            cities[k++] = this.defaultCity;
+            cities[k++] = this.newCity();
         }
+        System.out.println(Arrays.asList(cities));
         return cities;
+    }
+
+    @Bean
+    @Scope("prototype")
+    public City newCity() {
+        return new City(10, 20, "Oradea");
+    }
+
+    @Bean
+    @Scope("singleton")
+    public void getCity() {
+        float lat = (float)(Math.random() * 20);
+        float _long = Math.random() < 0.5 ? -(float)(Math.random() * 90): (float)(Math.random() * 90);
+        String cityName = generateRandomString();
+        this.defaultCity = new City(lat, _long, cityName);
     }
 }

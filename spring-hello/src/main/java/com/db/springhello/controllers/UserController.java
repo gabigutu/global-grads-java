@@ -14,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
@@ -27,6 +28,11 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JWTTokenService jwtTokenService;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("UserController created");
+    }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String register(@RequestBody MultiValueMap<String, String> formData) {
@@ -44,6 +50,13 @@ public class UserController {
         return "OK";
     }
 
+    /**
+     * Sets a Set-Cookie header on the response if the (username, password) pair matches an entry in the database.
+     *
+     * @param formData x-www-form-urlencoded form data with username and password keys set
+     * @param response HttpServletResponse object to set headers for server response
+     * @return The uid base64 encoded.
+     */
     @PostMapping(path = "/auth", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String login(@RequestBody MultiValueMap<String, String> formData, HttpServletResponse response) {
         String username = formData.get("username").get(0);
@@ -74,8 +87,14 @@ public class UserController {
 
         String uid = this.userService.getUID(username, password);
         if (uid != null) {
-            String jwtToken = this.userService.generateJwtToken(uid);
-            return jwtToken;
+            User user = this.userService.uidExists(uid);
+            if (user != null) {
+                String jwtToken = this.userService.generateJwtToken(uid, user.role);
+                return jwtToken;
+            } else {
+                System.err.println("User doesn't exist");
+                return null;
+            }
         } else {
             System.err.println("User doesn't exist");
             return null;
@@ -106,7 +125,7 @@ public class UserController {
         // set expire time to now
         // generate new token
         // the client should "save" the new token and "forget" to old one
-        jwtToken = this.userService.generateJwtToken(decodedJWT.getSubject(), 0);
+        jwtToken = this.userService.generateJwtToken(decodedJWT.getSubject(), 0, 0); // fake token
         System.out.println("Generated new expired token for the client to replace the old one: " + jwtToken);
         return jwtToken;
 

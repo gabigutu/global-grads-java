@@ -9,7 +9,7 @@
 
     <ul>
         <li th:each="city: ${cities}">
-            Latitude: <span th:text="${city.lat}"> Lat </span><br />
+            Latitude: <span th:text="${city.lat != null ? city.lat : 0}"> Lat </span><br />
             Longitude: <span th:text="${city._long}"> Long </span><br />
             City: <span th:text="${city.cityName}"> City name </span><br />
         </li>

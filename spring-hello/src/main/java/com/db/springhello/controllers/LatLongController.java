@@ -1,5 +1,6 @@
 package com.db.springhello.controllers;
 
+import com.db.springhello.exceptions.LatitudeException;
 import com.db.springhello.models.City;
 import com.db.springhello.services.LatLongService;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,7 +30,10 @@ public class LatLongController {
             @PathVariable(name = "lat") Float latitude,
             @PathVariable(name = "long") Float longitude,
             @CookieValue(name = "yourcity", defaultValue = "Unknown") String cookieCityName,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws LatitudeException {
+        if (latitude < 0) {
+            throw new LatitudeException(latitude);
+        }
         String cityName = this.latLongService.getCityName(latitude, longitude);
         ModelAndView modelAndView = new ModelAndView("latlong");
         modelAndView.addObject("city", cityName);
@@ -50,6 +54,11 @@ public class LatLongController {
         }
 
         return modelAndView;
+    }
+
+    @ExceptionHandler(LatitudeException.class)
+    public void latitudeHandler(Exception ex) {
+        System.err.println("Latitude is not fine: " + ex.getMessage());
     }
 
 }

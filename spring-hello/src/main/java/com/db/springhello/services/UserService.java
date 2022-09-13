@@ -27,13 +27,13 @@ public class UserService {
         return this.userRepository.findByUid(uid);
     }
 
-    public String generateJwtToken(String uid) {
-        JWTCreator.Builder jwtBuilder = this.jwtTokenService.generateToken();
+    public String generateJwtToken(String uid, int role) {
+        JWTCreator.Builder jwtBuilder = this.jwtTokenService.generateToken(role);
         return this.jwtTokenService.signToken(jwtBuilder.withSubject(uid));
     }
 
-    public String generateJwtToken(String uid, int expireDays) {
-        JWTCreator.Builder jwtBuilder = this.jwtTokenService.generateToken(expireDays);
+    public String generateJwtToken(String uid, int expireDays, int role) {
+        JWTCreator.Builder jwtBuilder = this.jwtTokenService.generateToken(expireDays, role);
         return this.jwtTokenService.signToken(jwtBuilder.withSubject(uid));
     }
 
