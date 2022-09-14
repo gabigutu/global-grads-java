@@ -1,8 +1,12 @@
 package com.db.springhello.controllers;
 
 import com.db.springhello.models.Customer;
+import com.db.springhello.repository.CustomerRepository;
 import com.db.springhello.services.CustomerService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +31,12 @@ public class CustomerController {
 
     @DeleteMapping("/{id}")
     public String deleteCustomer(@PathVariable(name = "id") Integer id) {
+        this.customerService.deleteCustomerById(id);
         return "{}";
     }
 
     @PostMapping("")
+    @ApiOperation(consumes = "application/json", value = "Post Customer")
     public ResponseEntity<Customer> postCustomer(@RequestBody Customer customer) {
         customer.id = 0;
 //        if (customer.firstName == "")
@@ -42,7 +48,9 @@ public class CustomerController {
     }
 
     @PutMapping("/")
+    @ApiOperation(consumes = "application/json, application/xml", value = "Put Customer")
     public ResponseEntity putCustomer() {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 }

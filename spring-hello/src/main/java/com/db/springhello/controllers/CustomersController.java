@@ -1,7 +1,11 @@
 package com.db.springhello.controllers;
 
+import com.db.springhello.models.Customer;
+import com.db.springhello.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +24,9 @@ public class CustomersController {
 
     @Autowired
     private ServerProperties serverProperties;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @GetMapping("")
     public Object getCustomers() {
@@ -40,6 +47,11 @@ public class CustomersController {
         }
 //        this.getCustomers();
         // nu e nimeni la /, du-te la fara slash
+    }
+
+    @GetMapping("/page")
+    public Page<Customer> getCustomersByPage(Pageable pageable) {
+        return this.customerRepository.findByFirstNameLike("vasile1", pageable);
     }
 
 }

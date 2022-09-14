@@ -31,4 +31,8 @@ public class CustomerService {
         return this.customerRepository.findAll();
     }
 
+    public void deleteCustomerById(int id) {
+        this.customerRepository.deleteById(id);
+    }
+
 }
